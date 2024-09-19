@@ -34,7 +34,6 @@ local function fillArray(enemyArray,enemyIdCounter)
         health = 25
     }
 	table.insert(enemyArray, enemy)
-	nk.logger_info("New enemy id = " .. tostring(enemyIdCounter))
 	enemyIdCounter = enemyIdCounter + 1
 	end
 end
@@ -67,7 +66,7 @@ function M.match_init(context, setupstate)
     local state = 
 	{
 		messages = {},
-		lastTimeSpawned = 2,
+		lastTimeSpawned = 0,
 		enemyIdCounter = 0,
 		enemyArray = {},
 		players = {}

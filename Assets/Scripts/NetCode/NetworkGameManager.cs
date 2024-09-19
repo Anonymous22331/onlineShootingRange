@@ -47,12 +47,8 @@ public class NetworkGameManager : MonoBehaviour
         _match = await _networkConnection._socket.JoinMatchAsync(match_id);
 
 
-    Debug.Log(match_id);
+        Debug.Log(match_id);
 
-    if (!_isSystemSet)
-        {
-            _systems = _systemsController.GetEcsSystems();
-        }
         if(_networkConnection._socket != null && _match != null)
         {
             InvokeRepeating("SendPlayerData", 0f, 0.1f);
@@ -61,6 +57,13 @@ public class NetworkGameManager : MonoBehaviour
 
     private void Update()
     {
+
+        if (!_isSystemSet)
+        {
+            _systems = _systemsController.GetEcsSystems();
+            _isSystemSet = true;
+        }
+
         while( TODO.Count > 0)
         {
             TODO.Dequeue()();
@@ -107,7 +110,7 @@ public class NetworkGameManager : MonoBehaviour
         }
         catch
         {
-            Debug.Log("World Error");
+           _isSystemSet = false;
         }
             break;
         default:
@@ -171,7 +174,8 @@ public class NetworkGameManager : MonoBehaviour
                     foreach (var syncPlayer in world.Filter<PlayerSyncComponent>().End())
                     {
 
-                            ref var playerSyncComponent = ref playerSyncPool.Get(syncPlayer);
+                        ref var playerSyncComponent = ref playerSyncPool.Get(syncPlayer);
+                        if (transformPool.Has(syncPlayer)){
                             var transformComponent = transformPool.Get(syncPlayer);
 
                             if (playerSyncComponent.Id == playerData.Id)
@@ -185,8 +189,11 @@ public class NetworkGameManager : MonoBehaviour
                                     });
                                 }
                             }
-                        
-
+                        }
+                        else 
+                        {
+                            Debug.Log("Synchronization failed");
+                        }
                     }
                 }
                 else 

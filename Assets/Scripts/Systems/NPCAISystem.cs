@@ -25,9 +25,12 @@ public class NPCAISystem : IEcsRunSystem
                     if (weaponComponent.CurrentShotCooldown >= weaponComponent.ShotCooldown)
                     {
                         var healthPool = world.GetPool<HealthComponent>();
-                        ref var healthComponent = ref healthPool.Get(closestPlayerEntity);
-                        healthComponent.Health -= weaponComponent.Damage;
-                        weaponComponent.CurrentShotCooldown = 0;
+                        if (world.GetPool<PlayerComponent>().Has(closestPlayerEntity))
+                        {
+                            ref var healthComponent = ref healthPool.Get(closestPlayerEntity);
+                            healthComponent.Health -= weaponComponent.Damage;
+                            weaponComponent.CurrentShotCooldown = 0;
+                        }
                     }
                 }
             }
